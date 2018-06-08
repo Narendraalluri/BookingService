@@ -7,7 +7,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-class Flight {
+public class Flight {
 
     private String departure;
     private String arrival;

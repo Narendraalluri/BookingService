@@ -1,16 +1,19 @@
 package com.example.booking.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import java.util.List;
 import java.util.UUID;
 
-@Getter
 @Entity
-
+@Getter
+@NoArgsConstructor
 public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,5 +24,14 @@ public class Flight {
     private String departureDate;
     private String arrivalDate;
 
+    @ManyToMany(mappedBy = "flights")
+    private List<Booking> bookings;
+
+    public Flight(String departure, String arrival, String departureDate, String arrivalDate) {
+        this.departure = departure;
+        this.arrival = arrival;
+        this.departureDate = departureDate;
+        this.arrivalDate = arrivalDate;
+    }
 
 }
