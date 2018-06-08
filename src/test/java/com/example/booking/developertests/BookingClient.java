@@ -19,7 +19,7 @@ public class BookingClient {
     @Test
     public void testAPI() {
         RestTemplate restTemplate = new RestTemplate();
-        String resourceURL = String.format("%s?%s", BASE_URL, "uid=a57eace4-38bf-4cd9-93d5-936bd584c929");
+        String resourceURL = String.format("%s?uid=%s", BASE_URL, "ebd839f8-aa0a-425e-8a75-fbd0823e260a");
         ResponseEntity<List<Booking>> bookingsForPassengerEntity =
                 restTemplate.exchange(resourceURL,
                         HttpMethod.GET, null, new ParameterizedTypeReference<List<Booking>>() {
