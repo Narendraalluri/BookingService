@@ -67,7 +67,7 @@ public class BookingServiceIntegrationTest {
 
         String passengerId = savedBooking.getPassenger().getId().toString();
 
-        mvc.perform(get("/bookings?passengerId=" + passengerId)
+        mvc.perform(get("/bookings?uid=" + passengerId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))

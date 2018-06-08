@@ -37,7 +37,7 @@ public class BookingController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Booking>> getPassengerBookings(@RequestParam(value="passengerId") String passengerId) {
+    public ResponseEntity<List<Booking>> getPassengerBookings(@RequestParam(value="uid") String passengerId) {
 
         Optional<UUID> passengerUUID = getUUID(passengerId);
         if (!passengerUUID.isPresent()) {

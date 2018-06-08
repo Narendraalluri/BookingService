@@ -82,7 +82,7 @@ public class BookingControllerTest {
         given(passenger.getId()).willReturn(passengerId);
         given(passenger.getLastName()).willReturn(lastName);
 
-        mvc.perform(get("/bookings?passengerId=" + passengerId.toString())
+        mvc.perform(get("/bookings?uid=" + passengerId.toString())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
