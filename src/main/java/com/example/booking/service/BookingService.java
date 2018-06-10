@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface BookingService {
-    List<Booking>
-    getBookingsForPassenger(UUID passengerId);
+    List<Booking> getBookingsForPassenger(UUID passengerId);
+    List<Booking> getAllBookings();
     Optional<Booking> getBookingDetails(UUID bookingId);
 }

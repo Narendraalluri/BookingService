@@ -48,17 +48,17 @@ public class BookingRepositoryTest {
         Flight flight = new Flight(flightDeparture, flightArrival,
                 flightDepartureDate, flightArrivalDate);
         flightRepository.save(flight);
-        Booking booking = entityManager.persistAndFlush(new Booking(passenger, Collections.singletonList(flight)));
+        Booking booking = entityManager.persistAndFlush(new Booking(Collections.singletonList(passenger), Collections.singletonList(flight)));
 
         //when
-        List<Booking> bookings = bookingRepository.findAllByPassengerId(booking.getPassenger().getId());
+        List<Booking> bookings = bookingRepository.findAllByPassengersIn(passengerRepository.findById(booking.getPassengers().get(0).getId()).get());
 
         //then
         assertFalse(bookings.isEmpty());
-        assertEquals(booking.getPassenger().getId(), bookings.get(0).getPassenger().getId());
-        assertEquals(passengerFirstName, bookings.get(0).getPassenger().getFirstName());
-        assertEquals(passengerLastName, bookings.get(0).getPassenger().getLastName());
-        assertEquals(passengerEmail, bookings.get(0).getPassenger().getEmail());
+        assertEquals(booking.getPassengers().get(0).getId(), bookings.get(0).getPassengers().get(0).getId());
+        assertEquals(passengerFirstName, bookings.get(0).getPassengers().get(0).getFirstName());
+        assertEquals(passengerLastName, bookings.get(0).getPassengers().get(0).getLastName());
+        assertEquals(passengerEmail, bookings.get(0).getPassengers().get(0).getEmail());
         assertFalse(bookings.get(0).getFlights().isEmpty());
         assertEquals(flightDeparture, bookings.get(0).getFlights().get(0).getDeparture());
         assertEquals(flightArrival, bookings.get(0).getFlights().get(0).getArrival());

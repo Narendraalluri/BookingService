@@ -78,7 +78,7 @@ public class BookingControllerTest {
         given(booking.getId()).willReturn(bookingId);
         given(booking.getFlights()).willReturn(Collections.singletonList(flight));
         given(flight.getDeparture()).willReturn(departure);
-        given(booking.getPassenger()).willReturn(passenger);
+        given(booking.getPassengers().get(0)).willReturn(passenger);
         given(passenger.getId()).willReturn(passengerId);
         given(passenger.getLastName()).willReturn(lastName);
 
@@ -109,7 +109,7 @@ public class BookingControllerTest {
         com.example.booking.model.Passenger passengerDTO = new com.example.booking.model.Passenger();
         com.example.booking.model.Flight flightDTO = new com.example.booking.model.Flight();
 
-        bookingDetails.setPassenger(passengerDTO);
+        bookingDetails.setPassengers(Collections.singletonList(passengerDTO));
         bookingDetails.setFlights(Collections.singletonList(flightDTO));
         bookingDetails.setBookingId(bookingId.toString());
 

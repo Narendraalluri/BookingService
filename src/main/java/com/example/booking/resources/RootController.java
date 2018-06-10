@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -29,7 +31,7 @@ public class RootController {
 
         resource.add(
                 linkTo(methodOn(BookingController.class)
-                        .getPassengerBookings(BookingApplication.BOOTSTRAP_PASSENGER_ID))
+                        .getPassengerBookings(Optional.of(BookingApplication.BOOTSTRAP_PASSENGER_ID)))
                         .withRel("passengerBookings"));
 
         resource.add(

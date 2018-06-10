@@ -11,8 +11,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 
 @SpringBootApplication
 public class BookingApplication implements CommandLineRunner {
@@ -20,6 +24,10 @@ public class BookingApplication implements CommandLineRunner {
 	private BookingRepository bookingRepository;
 	private PassengerRepository passengerRepository;
 	private FlightRepository flightRepository;
+
+	private static final String DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
+	private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_FORMAT);
+
 
 	public static String BOOTSTRAP_PASSENGER_ID;
 
@@ -37,19 +45,31 @@ public class BookingApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		Flight flight1 = new Flight("departure", "arrival", "departureDate", "arrivalDate");
-		Flight flight2 = new Flight("departure2", "arrival2", "departureDate2", "arrivalDate2");
+		Date currentDate = new Date();
+
+		LocalDateTime localDateTime = currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+		LocalDateTime departureDate1 = localDateTime.plusDays(1);
+		LocalDateTime arrivalDate1 = departureDate1.plusDays(1);
+		LocalDateTime departureDate2 = arrivalDate1.plusDays(1);
+		LocalDateTime arrivalDate2 = departureDate2.plusDays(1);
+
+		Flight flight1 = new Flight("HEL", "JFK", dateFormat.format(departureDate1), dateFormat.format(arrivalDate1));
+		Flight flight2 = new Flight("JFK", "HEL", dateFormat.format(departureDate1), dateFormat.format(arrivalDate2));
 		flightRepository.save(flight1);
 		flightRepository.save(flight2);
-		Passenger passenger = new Passenger("firstName", "lastName", "email");
+		Passenger passenger = new Passenger("Narendra", "Alluri", "narendravarmaalluri@gmail.com");
+		Passenger passenger1 = new Passenger("Amrutha", "Jampana", "amrutha.90990@gmail.com");
 		passengerRepository.save(passenger);
-		Booking booking = new Booking(passenger, Arrays.asList(flight1, flight2));
-		Booking booking1 = new Booking(passenger, Collections.singletonList(flight2));
+		passengerRepository.save(passenger1);
+		Booking booking = new Booking(Arrays.asList(passenger, passenger1), Arrays.asList(flight1, flight2));
+		Booking booking1 = new Booking(Arrays.asList(passenger, passenger1), Collections.singletonList(flight2));
 		Booking savedBooking = bookingRepository.save(booking);
+		Booking savedBooking1 = bookingRepository.save(booking1);
 		bookingRepository.save(booking1);
 		if (savedBooking != null) {
-			BOOTSTRAP_PASSENGER_ID = savedBooking.getPassenger().getId().toString();
-			System.out.println("Passenger Id " + savedBooking.getPassenger().getId());
+			BOOTSTRAP_PASSENGER_ID = savedBooking.getPassengers().get(0).getId().toString();
+			System.out.println("Passenger Id " + savedBooking.getPassengers().get(0).getId());
 		}
 	}
 }

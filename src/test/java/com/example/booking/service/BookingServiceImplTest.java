@@ -1,7 +1,9 @@
 package com.example.booking.service;
 
 import com.example.booking.entities.Booking;
+import com.example.booking.entities.Passenger;
 import com.example.booking.repositories.BookingRepository;
+import com.example.booking.repositories.PassengerRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -26,14 +28,21 @@ public class BookingServiceImplTest {
     private BookingRepository bookingRepository;
 
     @Mock
+    private PassengerRepository passengerRepository;
+
+    @Mock
     private Booking booking;
+
+    @Mock
+    private Passenger passenger;
 
     @Test
     public void testGetBookingsForPassenger() {
 
         //given
         UUID passengerId = UUID.randomUUID();
-        Mockito.when(bookingRepository.findAllByPassengerId(passengerId)).thenReturn(Collections.singletonList(booking));
+        Mockito.when(passengerRepository.findById(booking.getPassengers().get(0).getId())).thenReturn(Optional.of(passenger));
+        Mockito.when(bookingRepository.findAllByPassengersIn(passenger)).thenReturn(Collections.singletonList(booking));
 
         //when
         List<Booking> bookingList = bookingService.getBookingsForPassenger(passengerId);

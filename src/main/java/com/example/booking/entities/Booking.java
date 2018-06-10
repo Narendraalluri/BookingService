@@ -28,8 +28,12 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    private Passenger passenger;
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "BOOKING_PASSENGER",
+            joinColumns = @JoinColumn(name = "BOOKING_ID"),
+            inverseJoinColumns = @JoinColumn(name = "PASSENGER_ID")
+    )
+    private List<Passenger> passengers;
 
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "BOOKING_FLIGHT",
@@ -38,8 +42,8 @@ public class Booking {
     )
     private List<Flight> flights = new ArrayList<>();
 
-    public Booking(Passenger passenger, List<Flight> flights) {
-        this.passenger = passenger;
+    public Booking(List<Passenger> passengers, List<Flight> flights) {
+        this.passengers = passengers;
         this.flights = flights;
     }
 }

@@ -2,6 +2,7 @@ package com.example.booking.resources;
 
 import com.example.booking.model.Booking;
 import com.example.booking.model.BookingDetails;
+import com.example.booking.model.PassengerBookingDetails;
 import com.example.booking.service.BookingService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,16 @@ public class BookingController {
     }
 
     @GetMapping("")
-    public ResponseEntity<Resources<Booking>> getPassengerBookings(@RequestParam(value="passengerId") String passengerId) {
+    public ResponseEntity<Resources<Booking>> getPassengerBookings(@RequestParam(value="uid") Optional<String> passengerId) {
 
-        Optional<UUID> passengerUUID = getUUID(passengerId);
+        if (!passengerId.isPresent()) {
+            List<Booking> bookings = convertEntityToDTO(bookingService.getAllBookings());
+
+            Resources<Booking> resources = new Resources<>(bookings);
+
+            return new ResponseEntity<>(resources, new HttpHeaders(), HttpStatus.OK);
+        }
+        Optional<UUID> passengerUUID = getUUID(passengerId.get());
         if (!passengerUUID.isPresent()) {
             return new ResponseEntity<>(new Resources<>(Collections.emptyList()), new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
@@ -51,11 +59,34 @@ public class BookingController {
 
         Resources<Booking> resources = new Resources<>(bookings);
 
-        addLinks(resources, passengerId);
+        addLinks(resources, passengerId.get());
 
         return new ResponseEntity<>(resources, new HttpHeaders(), HttpStatus.OK);
 
 
+    }
+
+    @GetMapping("/{booking-id}/{passenger-id}")
+    public ResponseEntity<PassengerBookingDetails> getPassengerBookingDetails(@PathVariable(value="booking-id") String bookingId, @PathVariable(value="passenger-id") String passengerId) {
+
+        Optional<UUID> bookingUUID = getUUID(bookingId);
+
+        Optional<com.example.booking.entities.Booking> bookingEntity = bookingService.getBookingDetails(bookingUUID.get());
+
+        BookingDetails bookingDetails = bookingEntity.map(booking -> modelMapper.map(booking, BookingDetails.class))
+                .orElse(new BookingDetails());
+
+        PassengerBookingDetails passengerBookingDetails = new PassengerBookingDetails();
+        passengerBookingDetails.setBookingId(bookingDetails.getBookingId());
+        passengerBookingDetails.setFlights(bookingDetails.getFlights());
+        passengerBookingDetails.setPassenger(bookingDetails.getPassengers().stream()
+                .filter(passenger -> passenger.getPassengerId().equals(passengerId))
+                .findFirst()
+                .orElse(null));
+
+        HttpStatus status = bookingEntity.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+
+        return new ResponseEntity<>(passengerBookingDetails, new HttpHeaders(), status);
     }
 
     @GetMapping("/{booking-id}")
@@ -91,7 +122,7 @@ public class BookingController {
 
         resources.add(
                 linkTo(methodOn(BookingController.class)
-                        .getPassengerBookings(passengerId))
+                        .getPassengerBookings(Optional.of(passengerId)))
                         .withSelfRel());
 
         Optional<Booking> firstBooking = resources.getContent().stream().findFirst();
@@ -109,7 +140,7 @@ public class BookingController {
                     Booking model = new Booking();
                     model.setBookingId(booking.getId().toString());
                     model.setDeparture(CollectionUtils.isEmpty(booking.getFlights()) ? null : booking.getFlights().get(0).getDeparture());
-                    model.setLastName(booking.getPassenger().getLastName());
+                    model.setLastName(booking.getPassengers().get(0).getLastName());
                     return model;
                 })
                 .collect(Collectors.toList());

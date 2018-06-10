@@ -58,14 +58,14 @@ public class BookingServiceIntegrationTest {
         flightRepository.save(flight);
         Passenger passenger = new Passenger(FIRST_NAME, LAST_NAME, EMAIL);
         passengerRepository.save(passenger);
-        Booking booking = new Booking(passenger, Collections.singletonList(flight));
+        Booking booking = new Booking(Collections.singletonList(passenger), Collections.singletonList(flight));
         savedBooking = bookingRepository.save(booking);
     }
 
     @Test
     public void test_getPassengerBookings() throws Exception{
 
-        String passengerId = savedBooking.getPassenger().getId().toString();
+        String passengerId = savedBooking.getPassengers().get(0).getId().toString();
 
         mvc.perform(get("/bookings?uid=" + passengerId)
                 .contentType(MediaType.APPLICATION_JSON))

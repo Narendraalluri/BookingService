@@ -11,9 +11,9 @@ import java.util.List;
 @Setter
 @Getter
 @ToString
-public class BookingDetails extends ResourceSupport {
+public class PassengerBookingDetails extends ResourceSupport {
     @JsonProperty("id")
     private String bookingId;
-    private List<Passenger> passengers;
+    private Passenger passenger;
     private List<Flight> flights;
 }
