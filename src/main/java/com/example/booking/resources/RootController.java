@@ -1,5 +1,6 @@
 package com.example.booking.resources;
 
+import com.example.booking.BookingApplication;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.ResourceSupport;
@@ -28,7 +29,7 @@ public class RootController {
 
         resource.add(
                 linkTo(methodOn(BookingController.class)
-                        .getPassengerBookings(null))
+                        .getPassengerBookings(BookingApplication.BOOTSTRAP_PASSENGER_ID))
                         .withRel("passengerBookings"));
 
         resource.add(

@@ -21,6 +21,8 @@ public class BookingApplication implements CommandLineRunner {
 	private PassengerRepository passengerRepository;
 	private FlightRepository flightRepository;
 
+	public static String BOOTSTRAP_PASSENGER_ID;
+
 	@Autowired
 	public BookingApplication(BookingRepository bookingRepository, PassengerRepository passengerRepository, FlightRepository flightRepository) {
 		this.bookingRepository = bookingRepository;
@@ -45,6 +47,9 @@ public class BookingApplication implements CommandLineRunner {
 		Booking booking1 = new Booking(passenger, Collections.singletonList(flight2));
 		Booking savedBooking = bookingRepository.save(booking);
 		bookingRepository.save(booking1);
-		System.out.println("Passenger Id " + (savedBooking != null ? savedBooking.getPassenger().getId() : ""));
+		if (savedBooking != null) {
+			BOOTSTRAP_PASSENGER_ID = savedBooking.getPassenger().getId().toString();
+			System.out.println("Passenger Id " + savedBooking.getPassenger().getId());
+		}
 	}
 }

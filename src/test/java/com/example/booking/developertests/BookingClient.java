@@ -2,7 +2,6 @@ package com.example.booking.developertests;
 
 import com.example.booking.model.Booking;
 import com.example.booking.model.BookingDetails;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -25,8 +24,7 @@ public class BookingClient {
                         HttpMethod.GET, null, new ParameterizedTypeReference<List<Booking>>() {
                         });
         List<Booking> bookingsForPassenger = bookingsForPassengerEntity.getBody();
-        System.out.println(bookingsForPassenger.size());
-        bookingsForPassenger.stream().forEach(booking -> {
+        bookingsForPassenger.forEach(booking -> {
             String bookingResourceURL = String.format("%s/%s", BASE_URL, booking.getBookingId());
             ResponseEntity<BookingDetails> bookingResponseEntity = restTemplate.exchange(bookingResourceURL,
                     HttpMethod.GET, null, BookingDetails.class);
